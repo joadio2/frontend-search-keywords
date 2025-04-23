@@ -1,0 +1,21 @@
+.containerTitle {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding-left: 10%;
+}
+.docs {
+  width: 70px;
+  height: 70px;
+  margin-left: 10px;
+}
+.title {
+  font-size: 3.2em;
+  line-height: 1.1;
+  text-align: center;
+  font-family: "Roboto", sans-serif;
+}
+.icon {
+  font-size: 2em;
+}

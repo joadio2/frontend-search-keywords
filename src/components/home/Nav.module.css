@@ -1,0 +1,71 @@
+.section {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 90px;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+  font-family: "Roboto", sans-serif;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 25px;
+  padding: 25px 10px;
+  background-color: #eae7e7;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+  height: 90%;
+}
+.box {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60px;
+  height: 60px;
+  padding: 10px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.box:hover {
+  transform: scale(1.1);
+}
+
+.icon {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+}
+
+.tooltip {
+  position: absolute;
+  top: 50%;
+  left: 100px;
+  transform: translateY(-50%);
+  background-color: #111;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 8px;
+  white-space: nowrap;
+  font-size: 0.75rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  transform-origin: left center;
+  z-index: 1000;
+}
+
+.box:hover .tooltip {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}

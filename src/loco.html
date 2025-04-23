@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Resultados de Análisis</title>
+    <style>
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background-color: #f8f9fa;
+        color: #333;
+        margin: 2rem;
+        line-height: 1.6;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+      }
+
+      .url-block {
+        margin-bottom: 2rem;
+        padding: 1rem;
+        background-color: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .url-title {
+        font-weight: 600;
+        color: #0066cc;
+        margin-bottom: 0.5rem;
+        word-break: break-word;
+      }
+
+      .keyword-block {
+        margin-left: 1rem;
+        padding-left: 1rem;
+        border-left: 3px solid #ccc;
+        margin-bottom: 1rem;
+      }
+
+      .keyword {
+        font-weight: 500;
+        font-size: 1rem;
+        margin-bottom: 0.25rem;
+        color: #444;
+      }
+
+      .context {
+        font-style: italic;
+        color: #555;
+        padding-left: 0.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Resultados del Análisis</h1>
+
+    <div class="url-block">
+      <div class="url-title">https://ejemplo.com/articulo-1</div>
+
+      <div class="keyword-block">
+        <div class="keyword">gato</div>
+        <div class="context">
+          ...el <b>gato</b> caminaba lentamente por la calle bajo la lluvia.
+        </div>
+      </div>
+
+      <div class="keyword-block">
+        <div class="keyword">lluvia</div>
+        <div class="context">
+          ...se escuchaba el sonido constante de la <b>lluvia</b> golpeando los
+          cristales.
+        </div>
+      </div>
+    </div>
+
+    <div class="url-block">
+      <div class="url-title">https://otro-ejemplo.org/post</div>
+
+      <div class="keyword-block">
+        <div class="keyword">tecnología</div>
+        <div class="context">
+          ...el avance de la <b>tecnología</b> ha transformado nuestras vidas...
+        </div>
+      </div>
+
+      <div class="keyword-block">
+        <div class="keyword">inteligencia artificial</div>
+        <div class="context">
+          ...el impacto de la <b>inteligencia artificial</b> es cada vez más
+          evidente.
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
