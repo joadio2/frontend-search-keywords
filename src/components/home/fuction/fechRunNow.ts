@@ -1,16 +1,33 @@
 import axios from "axios";
-import { DataFetch } from "../interface/dataFecht";
-export const fechRunNow = async (data: DataFetch): Promise<void> => {
-  try {
-    console.log(data);
-    const response = await axios.post("http://localhost:3000/analyze", data);
+import { Task } from "../interface/dataFecht";
 
-    console.log(response.data);
-  } catch (error: any) {
+export const fetchRunNow = async (
+  data: Task
+): Promise<{ status: number; html: string }> => {
+  try {
+    console.log("Sending data:", data);
+
+    const response = await axios.post("http://localhost:3000/analyze", data);
+    console.log(response);
+    if (response.status !== 200) {
+      return { status: response.status, html: "" };
+    }
+
+    const htmlContent = response.data.html;
+    const returnData = {
+      status: response.status,
+      html: htmlContent,
+    };
+    return returnData;
+  } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.error(error.response?.data || error.message);
+      if (error.response) {
+        return { status: error.response.status, html: "" };
+      }
+      return { status: 500, html: "" };
     } else {
-      console.error(error);
+      console.error("Unexpected error:", error);
+      return { status: 500, html: "" };
     }
   }
 };

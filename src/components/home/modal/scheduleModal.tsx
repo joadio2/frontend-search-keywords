@@ -5,59 +5,13 @@ import play from "../../../assets/icon/play.webp";
 import Select from "react-select";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
-
-type ScheduleModalProps = {
-  onClose: () => void;
-  onNow: (data: {
-    email: string | null;
-    reportType: string | null;
-    tags: string[];
-    repeatMonthly: boolean;
-  }) => void;
-  onSchedule: (
-    datetime: string,
-    data: {
-      email: string | null;
-      reportType: string | null;
-      tags: string[];
-      repeatMonthly: boolean;
-    }
-  ) => void;
-  email: string | null;
-  setEmail: React.Dispatch<React.SetStateAction<string | null>>;
-  reportType: string | null;
-  setReportType: React.Dispatch<React.SetStateAction<string | null>>;
-  tags: string[];
-  setTags: React.Dispatch<React.SetStateAction<string[]>>;
-};
-
-const reportOptions = [
-  {
-    value: "Detección de Palabras Sensibles",
-    label: "Detección de Palabras Sensibles",
-  },
-  { value: "Análisis de Cumplimiento", label: "Análisis de Cumplimiento" },
-];
-
-const tagOptions = [
-  { value: "Auditoría de Seguridad", label: "Auditoría de Seguridad" },
-  { value: "Revisión de Documentos", label: "Revisión de Documentos" },
-  {
-    value: "Reporte de Confidencialidad",
-    label: "Reporte de Confidencialidad",
-  },
-];
+import { Task, ScheduleModalProps } from "../interface/dataFecht";
+import { reportOptions, tagOptions } from "./options";
 
 export default function ScheduleModal({
   onClose,
   onNow,
   onSchedule,
-  email,
-  setEmail,
-  reportType,
-  setReportType,
-  tags,
-  setTags,
 }: ScheduleModalProps) {
   const [selectProcess, setSelectProcess] = React.useState<
     "now" | "schedule" | null
@@ -65,32 +19,62 @@ export default function ScheduleModal({
   const [selectedDate, setSelectedDate] = React.useState<Date | undefined>();
   const [selectedTime, setSelectedTime] = React.useState("12:00");
   const [repeatMonthly, setRepeatMonthly] = React.useState(false);
+  const [data, setData] = React.useState<Task>({
+    title: "",
+    email: "",
+    reportType: "",
+    tags: [],
+    schedule: false,
+    repeatMonthly: false,
+  });
+  const [error, setError] = React.useState<string | null>(null);
+
+  const handleInputChange = (field: keyof Task, value: any) => {
+    setData((prev) => ({ ...prev, [field]: value }));
+  };
 
   const handleSchedule = () => {
-    if (!selectedDate) return;
+    if (!selectedDate || !selectedTime) {
+      setError("Please select a valid date and time.");
+      return;
+    }
     const [hour, minute] = selectedTime.split(":");
     const scheduled = new Date(selectedDate);
     scheduled.setHours(parseInt(hour, 10));
     scheduled.setMinutes(parseInt(minute, 10));
-    const formData = {
-      email,
-      reportType,
-      tags,
-      repeatMonthly,
-    };
-    onSchedule(scheduled.toISOString(), formData);
+    const scheduleAt = scheduled.toISOString();
+    onSchedule({ ...data, schedule: true, repeatMonthly, scheduleAt });
+  };
+
+  const validateForm = () => {
+    if (
+      !data.title ||
+      !data.email ||
+      !data.reportType ||
+      data.tags.length === 0
+    ) {
+      setError("All fields are required.");
+      return false;
+    }
+    if (selectProcess === "schedule" && !selectedDate) {
+      setError("Please select a valid date.");
+      return false;
+    }
+    if (selectProcess === "schedule" && !selectedTime) {
+      setError("Please select a valid time.");
+      return false;
+    }
+    setError(null); // Reset error if everything is valid
+    return true;
   };
 
   const handlerEvent = () => {
-    const formData = {
-      email,
-      reportType,
-      tags,
-      repeatMonthly,
-    };
+    if (!validateForm()) {
+      return; // Don't proceed if the form is not valid
+    }
 
     if (selectProcess === "now") {
-      onNow(formData);
+      onNow(data);
     } else {
       handleSchedule();
     }
@@ -102,6 +86,7 @@ export default function ScheduleModal({
         <button className={styles.closeButton} onClick={onClose}>
           ×
         </button>
+
         {selectProcess === null ? (
           <div className={styles.columnContainer}>
             <div
@@ -121,35 +106,51 @@ export default function ScheduleModal({
           </div>
         ) : (
           <>
-            <h3>¿Cuándo quieres iniciar el monitoreo?</h3>
-
-            <input
-              className={styles.input}
-              type="email"
-              placeholder="Email"
-              value={email || ""}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-
-            <Select
-              className={styles.select}
-              options={reportOptions}
-              placeholder="Tipo de Reporte"
-              value={reportOptions.find((opt) => opt.value === reportType)}
-              onChange={(selected) => setReportType(selected?.value || null)}
-            />
-
-            <Select
-              className={styles.select}
-              options={tagOptions}
-              placeholder="Etiquetas"
-              isMulti
-              value={tagOptions.filter((tag) => tags.includes(tag.value))}
-              onChange={(selected) =>
-                setTags(selected.map((option) => option.value))
-              }
-            />
-
+            {selectProcess === "schedule" && (
+              <h3>When do you want to start monitoring?</h3>
+            )}
+            <div className={styles.inputContainer}>
+              <input
+                className={styles.input}
+                type="text"
+                placeholder="Title Report"
+                value={data.title || ""}
+                onChange={(e) => handleInputChange("title", e.target.value)}
+              />
+              <input
+                className={styles.input}
+                type="email"
+                placeholder="Email"
+                value={data.email || ""}
+                onChange={(e) => handleInputChange("email", e.target.value)}
+              />
+              <Select
+                className={styles.select}
+                options={reportOptions}
+                placeholder="Report Type"
+                value={reportOptions.find(
+                  (opt) => opt.value === data.reportType
+                )}
+                onChange={(selected) =>
+                  handleInputChange("reportType", selected?.value || null)
+                }
+              />
+              <Select
+                className={styles.select}
+                options={tagOptions}
+                placeholder="Tags"
+                isMulti
+                value={tagOptions.filter((tag) =>
+                  data.tags.includes(tag.value)
+                )}
+                onChange={(selected) =>
+                  handleInputChange(
+                    "tags",
+                    selected.map((option) => option.value)
+                  )
+                }
+              />
+            </div>
             {selectProcess === "schedule" && (
               <>
                 <label className={styles.dateLabel}>Select Day:</label>
@@ -160,14 +161,12 @@ export default function ScheduleModal({
                     mode="single"
                   />
                 </div>
-
                 <input
                   className={styles.input}
                   type="time"
                   value={selectedTime}
                   onChange={(e) => setSelectedTime(e.target.value)}
                 />
-
                 <div className={styles.checkboxLabel}>
                   <input
                     className={styles.checkbox}
@@ -175,16 +174,22 @@ export default function ScheduleModal({
                     checked={repeatMonthly}
                     onChange={(e) => setRepeatMonthly(e.target.checked)}
                   />
-                  <p>Repetir cada mes</p>
+                  <p>Repeat every month</p>
                 </div>
               </>
             )}
           </>
         )}
 
+        {error && <p className={styles.error}>{error}</p>}
+
         <div className={styles.modalButtons}>
           {selectProcess !== null && (
-            <button className={styles.modalButton} onClick={handlerEvent}>
+            <button
+              className={styles.modalButton}
+              onClick={handlerEvent}
+              disabled={error !== null}
+            >
               {selectProcess === "now" ? "Run Now" : "Schedule"}
             </button>
           )}

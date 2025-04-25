@@ -1,0 +1,88 @@
+.container {
+  height: 90vh;
+  margin-left: 100px;
+  gap: 35px;
+  padding: 25px 10px;
+  background-color: #eae7e7;
+  border-radius: 20px;
+  font-family: "Roboto", sans-serif;
+}
+
+.calendar {
+  font-family: sans-serif;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.header {
+  text-align: center;
+  font-weight: bold;
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  text-transform: capitalize;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding: 8px;
+}
+
+.dayName {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.day {
+  text-align: center;
+  font-size: 1.5rem;
+  padding: 10px 0;
+  cursor: pointer;
+  border-radius: 6px;
+  margin: 2px;
+  transition: background 0.2s ease;
+  position: relative;
+}
+
+.day:hover {
+  background-color: #f0f0f0;
+}
+
+.selected {
+  background-color: black;
+  color: white;
+}
+
+.eventsList {
+  margin-top: 20px;
+}
+
+.event {
+  background-color: #f9f9f9;
+  padding: 10px;
+  border-radius: 8px;
+  margin: 10px 0;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+}
+
+.eventCount {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 5px;
+  text-align: center;
+}
+
+.event strong {
+  font-weight: bold;
+}
+
+.event p {
+  margin: 5px 0;
+  font-size: 0.9rem;
+  color: #444;
+}

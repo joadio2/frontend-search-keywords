@@ -2,9 +2,15 @@ import { useState } from "react";
 import styles from "./Form.module.css";
 import ModalInputs from "./modal/modal";
 import ScheduleModal from "./modal/scheduleModal";
-import { fechRunNow } from "./fuction/fechRunNow";
-import { ScheduleData, DataFetch } from "./interface/dataFecht";
+import { fetchRunNow } from "./fuction/fechRunNow";
+import { fechSchedule } from "./fuction/fetchSchedule";
+import { Task } from "./interface/dataFecht";
+import Loader from "../../pages/loader";
+import { getId } from "./fuction/getId";
+import { useNavigate } from "react-router-dom";
+import { scheduler } from "timers/promises";
 export default function KeywordUrlForm() {
+  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [inputType, setInputType] = useState<"url" | "keyword" | null>(null);
   const [urlCount, setUrlCount] = useState(0);
@@ -12,10 +18,8 @@ export default function KeywordUrlForm() {
   const [urls, setUrls] = useState<string[]>([]);
   const [keywords, setKeywords] = useState<string[]>([]);
   const [showScheduleModal, setShowScheduleModal] = useState(false);
-  const [email, setEmail] = useState<string | null>(null);
-  const [reportType, setReportType] = useState<string | null>(null);
-  const [tags, setTags] = useState<string[]>([]);
-
+  const [isLoading, setIsLoading] = useState(false);
+  if (isLoading) return <Loader />;
   const handleGenerateInputs = () => {
     if (inputType === "url") {
       setUrls(Array(urlCount).fill(""));
@@ -24,15 +28,25 @@ export default function KeywordUrlForm() {
     }
     setShowModal(false);
   };
-  async function onNow(schduleData: ScheduleData) {
-    const data: DataFetch = {
+  async function runNow(schduleData: Task) {
+    setIsLoading(true);
+
+    const user = await getId();
+    const data: Task = {
       ...schduleData,
       urls,
       keywords,
-      userId: 1,
-      role: "admin",
+      userId: user,
     };
-    await fechRunNow(data);
+    const response = await fetchRunNow(data);
+    if (response.status !== 200) return navigate("/failed");
+    navigate("/completed", {
+      state: {
+        data: response.html,
+        isScheduled: false,
+      },
+    });
+    setIsLoading(false);
   }
   const handleInputChange = (
     index: number,
@@ -50,14 +64,27 @@ export default function KeywordUrlForm() {
     }
   };
 
-  const handleSchedule = (datetime: string) => {
+  async function handleSchedule(formdata: Task) {
     setShowScheduleModal(false);
-    alert(
-      `Monitoreo programado para: ${datetime}\nTipo de reporte: ${reportType}\nEtiquetas: ${tags.join(
-        ", "
-      )}\nCorreo: ${email}`
-    );
-  };
+    setIsLoading(true);
+    const user = await getId();
+    const data: Task = {
+      ...formdata,
+      urls,
+      keywords,
+      userId: user,
+    };
+
+    const response = await fechSchedule(data);
+    if (response.status !== 200) return navigate("/failed");
+    navigate("/completed", {
+      state: {
+        data: response.scheduleTask,
+        isScheduled: true,
+      },
+    });
+    setIsLoading(false);
+  }
 
   return (
     <div className={styles.container}>
@@ -80,12 +107,12 @@ export default function KeywordUrlForm() {
               setShowModal(true);
             }}
           >
-            Añadir URLs
+            Add URLs
           </button>
         </div>
 
         <div className={styles.column}>
-          <h2>key Words</h2>
+          <h2>Keywords</h2>
           {keywords.map((kw, idx) => (
             <input
               className={styles.input}
@@ -105,7 +132,7 @@ export default function KeywordUrlForm() {
               setShowModal(true);
             }}
           >
-            Añadir Palabras Clave
+            Add Keywords
           </button>
         </div>
       </section>
@@ -136,22 +163,8 @@ export default function KeywordUrlForm() {
       {showScheduleModal && (
         <ScheduleModal
           onClose={() => setShowScheduleModal(false)}
-          onNow={() => {
-            setShowScheduleModal(false);
-            onNow({
-              email,
-              reportType,
-              tags,
-              schedule: false,
-            });
-          }}
-          onSchedule={(datetime) => handleSchedule(datetime)}
-          email={email}
-          setEmail={setEmail}
-          reportType={reportType}
-          setReportType={setReportType}
-          tags={tags}
-          setTags={setTags}
+          onNow={runNow}
+          onSchedule={handleSchedule}
         />
       )}
     </div>

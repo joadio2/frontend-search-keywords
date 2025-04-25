@@ -20,12 +20,12 @@ export default function ModalInputs({
   setShowModal,
 }: ModalProps) {
   const handleAccept = () => {
-    if (inputType === "url" && urlCount < 1) {
-      alert("Debes ingresar al menos 2 URLs.");
+    if (inputType === "url" && urlCount < 2) {
+      alert("You must enter at least 2 URLs.");
       return;
     }
-    if (inputType === "keyword" && keywordCount < 1) {
-      alert("Debes ingresar al menos 1 palabra clave.");
+    if (inputType === "keyword" && (keywordCount < 1 || keywordCount > 20)) {
+      alert("You must enter at least 1 keyword and no more than 20 keywords.");
       return;
     }
 
@@ -35,9 +35,7 @@ export default function ModalInputs({
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modal}>
-        <h3>
-          ¿Cuántas {inputType === "url" ? "URLs" : "Palabras Clave"} quieres?
-        </h3>
+        <h3>How much {inputType === "url" ? "URLs" : "Keywords"}? </h3>
         <input
           className={styles.input}
           style={{ color: "black" }}
@@ -52,7 +50,7 @@ export default function ModalInputs({
         />
         <div className={styles.modalButtons}>
           <button onClick={handleAccept} className={styles.modalButton}>
-            Aceptar
+            GO
           </button>
           <button
             onClick={() => setShowModal(false)}
