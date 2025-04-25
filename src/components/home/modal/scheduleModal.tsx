@@ -64,13 +64,13 @@ export default function ScheduleModal({
       setError("Please select a valid time.");
       return false;
     }
-    setError(null); // Reset error if everything is valid
+    setError(null);
     return true;
   };
 
   const handlerEvent = () => {
     if (!validateForm()) {
-      return; // Don't proceed if the form is not valid
+      return;
     }
 
     if (selectProcess === "now") {
@@ -185,11 +185,7 @@ export default function ScheduleModal({
 
         <div className={styles.modalButtons}>
           {selectProcess !== null && (
-            <button
-              className={styles.modalButton}
-              onClick={handlerEvent}
-              disabled={error !== null}
-            >
+            <button className={styles.modalButton} onClick={handlerEvent}>
               {selectProcess === "now" ? "Run Now" : "Schedule"}
             </button>
           )}

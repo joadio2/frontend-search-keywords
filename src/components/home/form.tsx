@@ -76,7 +76,7 @@ export default function KeywordUrlForm() {
     };
 
     const response = await fechSchedule(data);
-    if (response.status !== 200) return navigate("/failed");
+    if (response.status !== 201) return navigate("/failed");
     navigate("/completed", {
       state: {
         data: response.scheduleTask,

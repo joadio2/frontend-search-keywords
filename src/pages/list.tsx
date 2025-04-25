@@ -14,10 +14,18 @@ export default function List() {
   const [data, setData] = React.useState<FileItem[]>([]);
 
   const fetchData = async () => {
-    const userId = await getId();
-    const res = await fetch(`http://localhost:3000/getfiles/${userId}`);
-    const json = await res.json();
-    setData(json.data);
+    try {
+      const userId = await getId();
+      const res = await fetch(`http://localhost:3000/getfiles/${userId}`);
+      const json = await res.json();
+      if (res.ok) {
+        setData(json.data);
+      } else {
+        setData([]);
+      }
+    } catch (error) {
+      setData([]);
+    }
   };
 
   React.useEffect(() => {
@@ -28,14 +36,18 @@ export default function List() {
     <section>
       <Nav />
       <div className={styles.cardContainer}>
-        {data.map((item, index) => (
-          <div key={index} className={styles.card}>
-            <a href={item.url} target="_blank" rel="noopener noreferrer">
-              <img src={docs} alt={item.title} className={styles.img} />
-            </a>
-            <h1 className={styles.title}>{item.title}</h1>
-          </div>
-        ))}
+        {data.length > 0 && (
+          <>
+            {data.map((item, index) => (
+              <div key={index} className={styles.card}>
+                <a href={item.url} target="_blank" rel="noopener noreferrer">
+                  <img src={docs} alt={item.title} className={styles.img} />
+                </a>
+                <h1 className={styles.title}>{item.title}</h1>
+              </div>
+            ))}
+          </>
+        )}
       </div>
     </section>
   );

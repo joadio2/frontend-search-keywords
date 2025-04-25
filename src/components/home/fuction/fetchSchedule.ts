@@ -9,7 +9,7 @@ export const fechSchedule = async (
       "http://localhost:3000/schedule-task",
       data
     );
-
+    console.log(response);
     if (response.status !== 201) {
       return { status: response.status, scheduleTask: "" };
     }
