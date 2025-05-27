@@ -6,7 +6,7 @@ export const fechSchedule = async (
 ): Promise<{ status: number; scheduleTask: string }> => {
   try {
     const response = await axios.post(
-      "http://localhost:3000/schedule-task",
+      `${import.meta.env.VITE_API_URL}/schedule-task`,
       data
     );
     console.log(response);

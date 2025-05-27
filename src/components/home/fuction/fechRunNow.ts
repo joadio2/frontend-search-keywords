@@ -7,7 +7,10 @@ export const fetchRunNow = async (
   try {
     console.log("Sending data:", data);
 
-    const response = await axios.post("http://localhost:3000/analyze", data);
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_URL}/analyze`,
+      data
+    );
     console.log(response);
     if (response.status !== 200) {
       return { status: response.status, html: "" };

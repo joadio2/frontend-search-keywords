@@ -4,14 +4,14 @@ import { useNavigate, useLocation } from "react-router-dom";
 export default function Completed() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { data, isScheduled } = location.state || {};
+  const { data, isScheduled, title } = location.state || {};
 
   const handleClick = () => {
     if (isScheduled) {
       navigate("/calendar");
       return;
     }
-    window.open(data, "_blank");
+    navigate(`/report?title=${encodeURIComponent(`${title}`)}`);
   };
 
   return (

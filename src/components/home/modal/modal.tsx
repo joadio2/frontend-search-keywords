@@ -20,7 +20,7 @@ export default function ModalInputs({
   setShowModal,
 }: ModalProps) {
   const handleAccept = () => {
-    if (inputType === "url" && urlCount < 2) {
+    if (inputType === "url" && urlCount < 0) {
       alert("You must enter at least 2 URLs.");
       return;
     }

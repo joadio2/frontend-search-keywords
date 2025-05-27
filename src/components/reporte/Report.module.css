@@ -1,0 +1,226 @@
+.wrapper {
+  min-height: 100vh;
+  background-color: #fff;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  padding-left: 10rem;
+}
+
+.layout {
+  display: flex;
+  height: 100vh; /* para que ocupe toda la altura */
+}
+
+.sidebar {
+  width: 220px;
+  padding: 1rem;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  border-right: 1px solid #e5e7eb;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.backButton {
+  background-color: #3b82f6;
+  border: none;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  transition: background-color 0.3s ease;
+  user-select: none;
+}
+
+.backButton:hover {
+  background-color: #2563eb;
+}
+
+.sidebarTitle {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #111827;
+  margin-bottom: 1rem;
+  user-select: none;
+}
+
+/* El scroll solo en la lista, con flex-grow para tomar el espacio restante */
+.indexList {
+  padding-top: 1rem;
+  background-color: #f3f4f6;
+
+  overflow-y: auto;
+  flex-grow: 1;
+  padding-right: 0.25rem; /* para no cortar scrollbar */
+}
+
+/* Items de la lista */
+.indexItem {
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.indexSnippet {
+  font-size: 0.75rem;
+  color: #6b7280;
+  line-height: 1.3;
+  margin-top: 0.25rem;
+}
+
+.scoreBadgeMini {
+  display: inline-block;
+  margin-top: 0.25rem;
+  margin-left: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 999px;
+  color: #fff;
+}
+.indexLink {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #1f2937;
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.indexLink:hover {
+  background-color: #dbeafe;
+  color: #2563eb;
+  outline: none;
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.container {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto; /* scroll en contenido principal si es necesario */
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  color: #222;
+}
+
+.card {
+  border-radius: 16px;
+  padding: 1.5rem;
+
+  margin-bottom: 2rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.id {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.scoreBadge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: white;
+}
+.highScore {
+  background-color: #22c55e;
+}
+
+.mediumScore {
+  background-color: #facc15;
+  color: #333;
+}
+
+.lowScore {
+  background-color: #f87171;
+}
+
+.snippet {
+  color: #444;
+  line-height: 1.6;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+}
+
+.keywords {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.keyword {
+  background-color: #ede9fe;
+  color: #5b21b6;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.actions {
+  padding: 1rem 0;
+}
+.buttonAction {
+  background-color: #3b82f6;
+  color: white;
+  padding: 0.6rem 1.4rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.562);
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.buttonAction:hover {
+  background-color: #2563eb;
+  transform: translateY(-1px);
+}
+.progressBar {
+  width: 100%;
+  height: 6px;
+  background-color: #e5e7eb;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+.toggleButton {
+  background: none;
+  border: none;
+  color: #007bff; /* color azul típico de enlaces */
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-left: 5px;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.toggleButton:hover {
+  color: #0056b3; /* azul más oscuro al pasar el mouse */
+}

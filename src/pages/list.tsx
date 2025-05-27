@@ -3,10 +3,10 @@ import Nav from "../components/home/nav";
 import docs from "../assets/document.png";
 import styles from "./List.module.css";
 import { getId } from "../components/home/fuction/getId";
-
+import { Link } from "react-router-dom";
 interface FileItem {
   userId: string;
-  url: string; // URL del recurso
+  url: string;
   title: string;
 }
 
@@ -39,12 +39,16 @@ export default function List() {
         {data.length > 0 && (
           <>
             {data.map((item, index) => (
-              <div key={index} className={styles.card}>
-                <a href={item.url} target="_blank" rel="noopener noreferrer">
+              <Link
+                key={index}
+                to={`/report?title=${encodeURIComponent(`${item.title}`)}`}
+              >
+                <div className={styles.card}>
                   <img src={docs} alt={item.title} className={styles.img} />
-                </a>
-                <h1 className={styles.title}>{item.title}</h1>
-              </div>
+
+                  <h1 className={styles.title}>{item.title}</h1>
+                </div>
+              </Link>
             ))}
           </>
         )}

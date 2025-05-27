@@ -1,48 +1,38 @@
-// hooks/useCalendarLogic.ts
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { ScheduledJob } from "../interfaces/even.interfaces";
+
 export function useCalendarLogic(
   events: ScheduledJob[],
   year: number,
   month: number
 ) {
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const startDay = new Date(year, month, 1).getDay();
+
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedEvents, setSelectedEvents] = useState<ScheduledJob[]>([]);
-
-  const getDaysInMonth = (year: number, month: number) =>
-    new Date(year, month + 1, 0).getDate();
-
-  const getFirstDayOfMonth = (year: number, month: number) =>
-    new Date(year, month, 1).getDay();
-
-  const daysInMonth = getDaysInMonth(year, month);
-  const firstDay = getFirstDayOfMonth(year, month);
-
-  const daysArray = Array.from({ length: firstDay + daysInMonth }, (_, i) =>
-    i < firstDay ? null : i - firstDay + 1
-  );
 
   const handleSelect = (day: number) => {
-    const selected = new Date(year, month, day);
-    setSelectedDate(selected);
+    setSelectedDate(new Date(year, month, day));
+  };
 
-    const eventsForDay = events.filter((event) => {
-      const eventDate = event.nextRunAt ? new Date(event.nextRunAt) : null;
+  const daysArray = useMemo(() => {
+    const arr: (number | null)[] = Array(startDay).fill(null);
+    for (let i = 1; i <= daysInMonth; i++) arr.push(i);
+    return arr;
+  }, [year, month]);
+
+  const selectedEvents = useMemo(() => {
+    return events.filter((event) => {
+      const eventDate = event.scheduledAt ? new Date(event.scheduledAt) : null;
       return (
         eventDate &&
-        eventDate.getDate() === day &&
-        eventDate.getMonth() === month &&
-        eventDate.getFullYear() === year
+        selectedDate &&
+        eventDate.getDate() === selectedDate.getDate() &&
+        eventDate.getMonth() === selectedDate.getMonth() &&
+        eventDate.getFullYear() === selectedDate.getFullYear()
       );
     });
+  }, [selectedDate, events]);
 
-    setSelectedEvents(eventsForDay);
-  };
-
-  return {
-    daysArray,
-    handleSelect,
-    selectedEvents,
-    selectedDate,
-  };
+  return { daysArray, handleSelect, selectedDate, selectedEvents };
 }

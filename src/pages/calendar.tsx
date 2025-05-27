@@ -6,10 +6,12 @@ import { useCalendarLogic } from "../components/calendar/fuctions/useCalendar";
 import { ScheduledJob } from "../components/calendar/interfaces/even.interfaces";
 import { getId } from "../components/home/fuction/getId";
 import Loader from "./loader";
+
 export default function Calendar() {
   const today = new Date();
   const year = today.getFullYear();
   const month = today.getMonth();
+
   const [loading, setLoading] = useState(false);
   const [events, setEvents] = useState<ScheduledJob[]>([]);
 
@@ -23,12 +25,13 @@ export default function Calendar() {
       try {
         setLoading(true);
         const response = await axios.get(
-          `http://localhost:3000/schedule-task/${userId}`
+          `${import.meta.env.API_URL}/schedule-task/${userId}`
         );
         const data: ScheduledJob[] = response.data.data;
         console.log("event", data);
+
         const filtered = data.filter((event) => {
-          const date = event.nextRunAt ? new Date(event.nextRunAt) : null;
+          const date = event.scheduledAt ? new Date(event.scheduledAt) : null;
           return (
             date && date.getMonth() === month && date.getFullYear() === year
           );
@@ -44,7 +47,9 @@ export default function Calendar() {
 
     fetchEvents();
   }, [month, year]);
+
   if (loading) return <Loader />;
+
   return (
     <section>
       <Nav />
@@ -61,8 +66,8 @@ export default function Calendar() {
             ))}
             {daysArray.map((day, index) => {
               const eventsForDay = events.filter((event) => {
-                const eventDate = event.nextRunAt
-                  ? new Date(event.nextRunAt)
+                const eventDate = event.scheduledAt
+                  ? new Date(event.scheduledAt)
                   : null;
                 return (
                   day &&
@@ -100,23 +105,31 @@ export default function Calendar() {
           <div className={styles.eventsList}>
             <h3>Eventos para el {selectedDate?.toLocaleDateString()}</h3>
             {selectedEvents.map((event, index) => {
-              const eventDate = event.nextRunAt
-                ? new Date(event.nextRunAt)
+              const eventDate = event.scheduledAt
+                ? new Date(event.scheduledAt)
                 : null;
+
+              const normalizedDate = eventDate
+                ? eventDate.toLocaleString("en-GB", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })
+                : "Sin fecha";
+
               return (
                 <div key={index} className={styles.event}>
                   <p>
-                    <strong>{event.name}</strong>
+                    <strong>{event.title}</strong>
                   </p>
                   <p>
-                    <strong>Title:</strong> {event.data.title}
+                    <strong>Scheduled for:</strong> {normalizedDate}
                   </p>
                   <p>
-                    <strong>Reporte Type:</strong> {event.data.reportType}
-                  </p>
-                  <p>
-                    <strong>Scheduled for:</strong>{" "}
-                    {eventDate?.toLocaleString() ?? "Sin fecha"}
+                    <strong>Repite mensualmente:</strong>{" "}
+                    {event.repeatMonthly ? "Sí" : "No"}
                   </p>
                 </div>
               );

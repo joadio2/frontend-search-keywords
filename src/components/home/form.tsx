@@ -8,6 +8,7 @@ import { Task } from "./interface/dataFecht";
 import Loader from "../../pages/loader";
 import { getId } from "./fuction/getId";
 import { useNavigate } from "react-router-dom";
+import ValidationAlertModal from "./modal/validationModal";
 export default function KeywordUrlForm() {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
@@ -18,6 +19,12 @@ export default function KeywordUrlForm() {
   const [keywords, setKeywords] = useState<string[]>([]);
   const [showScheduleModal, setShowScheduleModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showValidationModal, setShowValidationModal] = useState({
+    message: "",
+    isOpen: false,
+  });
+  const [urlErrors, setUrlErrors] = useState<boolean[]>([]);
+  const [keywordErrors, setKeywordErrors] = useState<boolean[]>([]);
   if (isLoading) return <Loader />;
   const handleGenerateInputs = () => {
     if (inputType === "url") {
@@ -43,6 +50,7 @@ export default function KeywordUrlForm() {
       state: {
         data: response.html,
         isScheduled: false,
+        title: schduleData.title,
       },
     });
     setIsLoading(false);
@@ -80,11 +88,60 @@ export default function KeywordUrlForm() {
       state: {
         data: response.scheduleTask,
         isScheduled: true,
+        title: formdata.title,
       },
     });
     setIsLoading(false);
   }
+  const isValidUrl = (url: string) => {
+    try {
+      new URL(url);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  };
+  function isSingleWord(str: string): boolean {
+    return /^\S+$/.test(str); // no espacios
+  }
+  const validateInputs = () => {
+    const urlValidation = urls.map(isValidUrl);
+    const keywordValidation = keywords.map(isSingleWord);
 
+    setUrlErrors(urlValidation.map((v) => !v));
+    setKeywordErrors(keywordValidation.map((v) => !v));
+
+    const allValid =
+      urlValidation.every(Boolean) &&
+      keywordValidation.every(Boolean) &&
+      keywords.length >= 3;
+
+    if (!allValid) {
+      let errorMessage = "Please fix errors before proceeding. ";
+
+      if (!urlValidation.every(Boolean)) {
+        errorMessage += "URLs must be valid. ";
+      }
+      if (!keywordValidation.every(Boolean)) {
+        errorMessage += "Keywords cannot contain spaces and not be empty. ";
+      }
+      if (keywords.length < 3) {
+        errorMessage += "You must enter at least 3 keywords.";
+      }
+
+      setShowValidationModal({
+        message: errorMessage,
+        isOpen: true,
+      });
+
+      return;
+    }
+
+    setShowScheduleModal(true);
+    return allValid;
+  };
+
+  console.log(showValidationModal);
   return (
     <div className={styles.container}>
       <section className={styles.columnContainer}>
@@ -92,9 +149,11 @@ export default function KeywordUrlForm() {
           <h2>URLs</h2>
           {urls.map((url, idx) => (
             <input
-              className={styles.input}
+              className={`${styles.input} ${
+                urlErrors[idx] ? styles.inputInvalid : ""
+              }`}
               key={idx}
-              type="text"
+              type="url"
               placeholder={`URL ${idx + 1}`}
               value={url}
               onChange={(e) => handleInputChange(idx, e.target.value, "url")}
@@ -114,7 +173,9 @@ export default function KeywordUrlForm() {
           <h2>Keywords</h2>
           {keywords.map((kw, idx) => (
             <input
-              className={styles.input}
+              className={`${styles.input} ${
+                keywordErrors[idx] ? styles.inputInvalid : ""
+              }`}
               style={{ color: "black" }}
               key={idx}
               type="text"
@@ -138,10 +199,7 @@ export default function KeywordUrlForm() {
 
       {urlCount >= 1 && keywordCount >= 1 && (
         <section className={styles.confirm}>
-          <button
-            className={styles.confirmButton}
-            onClick={() => setShowScheduleModal(true)}
-          >
+          <button className={styles.confirmButton} onClick={validateInputs}>
             Add Monitoring
           </button>
         </section>
@@ -164,6 +222,13 @@ export default function KeywordUrlForm() {
           onClose={() => setShowScheduleModal(false)}
           onNow={runNow}
           onSchedule={handleSchedule}
+        />
+      )}
+
+      {showValidationModal.isOpen && (
+        <ValidationAlertModal
+          message={showValidationModal.message}
+          onClose={() => setShowValidationModal({ isOpen: false, message: "" })}
         />
       )}
     </div>

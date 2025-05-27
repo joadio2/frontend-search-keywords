@@ -45,29 +45,36 @@ export default function ScheduleModal({
     const scheduleAt = scheduled.toISOString();
     onSchedule({ ...data, schedule: true, repeatMonthly, scheduleAt });
   };
+  const isValidEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
 
   const validateForm = () => {
     if (
       !data.title ||
       !data.email ||
+      !isValidEmail(data.email) ||
       !data.reportType ||
       data.tags.length === 0
     ) {
-      setError("All fields are required.");
+      setError("All fields are required and email must be valid.");
       return false;
     }
+
     if (selectProcess === "schedule" && !selectedDate) {
       setError("Please select a valid date.");
       return false;
     }
+
     if (selectProcess === "schedule" && !selectedTime) {
       setError("Please select a valid time.");
       return false;
     }
+
     setError(null);
     return true;
   };
-
   const handlerEvent = () => {
     if (!validateForm()) {
       return;
