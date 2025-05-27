@@ -8,6 +8,7 @@ import { Task } from "./interface/dataFecht";
 import Loader from "../../pages/loader";
 import { getId } from "./fuction/getId";
 import { useNavigate } from "react-router-dom";
+import { useReportStore } from "../../store/useReportStore";
 import ValidationAlertModal from "./modal/validationModal";
 export default function KeywordUrlForm() {
   const navigate = useNavigate();
@@ -18,14 +19,14 @@ export default function KeywordUrlForm() {
   const [urls, setUrls] = useState<string[]>([]);
   const [keywords, setKeywords] = useState<string[]>([]);
   const [showScheduleModal, setShowScheduleModal] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [showValidationModal, setShowValidationModal] = useState({
     message: "",
     isOpen: false,
   });
+  const { setloading, loading } = useReportStore();
   const [urlErrors, setUrlErrors] = useState<boolean[]>([]);
   const [keywordErrors, setKeywordErrors] = useState<boolean[]>([]);
-  if (isLoading) return <Loader />;
+  if (loading) return <Loader />;
   const handleGenerateInputs = () => {
     if (inputType === "url") {
       setUrls(Array(urlCount).fill(""));
@@ -35,7 +36,7 @@ export default function KeywordUrlForm() {
     setShowModal(false);
   };
   async function runNow(schduleData: Task) {
-    setIsLoading(true);
+    setloading(true);
 
     const user = await getId();
     const data: Task = {
@@ -53,7 +54,7 @@ export default function KeywordUrlForm() {
         title: schduleData.title,
       },
     });
-    setIsLoading(false);
+    setloading(false);
   }
   const handleInputChange = (
     index: number,
@@ -73,7 +74,7 @@ export default function KeywordUrlForm() {
 
   async function handleSchedule(formdata: Task) {
     setShowScheduleModal(false);
-    setIsLoading(true);
+    setloading(true);
     const user = await getId();
     const data: Task = {
       ...formdata,
@@ -91,7 +92,7 @@ export default function KeywordUrlForm() {
         title: formdata.title,
       },
     });
-    setIsLoading(false);
+    setloading(false);
   }
   const isValidUrl = (url: string) => {
     try {
@@ -141,7 +142,6 @@ export default function KeywordUrlForm() {
     return allValid;
   };
 
-  console.log(showValidationModal);
   return (
     <div className={styles.container}>
       <section className={styles.columnContainer}>

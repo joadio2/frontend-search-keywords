@@ -25,7 +25,7 @@ export default function Calendar() {
       try {
         setLoading(true);
         const response = await axios.get(
-          `${import.meta.env.API_URL}/schedule-task/${userId}`
+          `${import.meta.env.VITE_API_URL}/schedule-task/${userId}`
         );
         const data: ScheduledJob[] = response.data.data;
         console.log("event", data);

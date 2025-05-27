@@ -2,7 +2,7 @@ import { useState } from "react";
 import Nav from "../home/nav";
 import styles from "./Report.module.css";
 import { useReportStore } from "../../store/useReportStore";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 type ResultItem = {
   id: string;
@@ -19,13 +19,11 @@ function getScoreClass(score: number): string {
 }
 
 export default function RenderReport() {
-  const location = useLocation();
   const navigate = useNavigate();
-  const { datosReport } = useReportStore();
+  const { datosReport, title } = useReportStore();
   console.log(datosReport);
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
-  const { title } = location.state || {};
-  console.log(title);
+
   const toggleExpand = (id: string) => {
     setExpandedItems((prev) => {
       const newSet = new Set(prev);
@@ -38,7 +36,6 @@ export default function RenderReport() {
     });
   };
 
-  // Si no tienes datos cargados, muestra mensaje
   if (!datosReport || !datosReport.match?.data?.results?.length)
     return <div>Cargando datos...</div>;
 
@@ -106,7 +103,7 @@ export default function RenderReport() {
                   <span className={styles.id}>
                     {`${datosReport?.typeDocument === "pdf" ? "PAGE" : "ID"}`}:{" "}
                     {datosReport?.typeDocument === "pdf"
-                      ? `${Math.max(0, Number(item.id) - 1)} / ${item.id}`
+                      ? `${item.id} /${Math.max(0, Number(item.id) + 1)} `
                       : item.id}
                   </span>
                   <span

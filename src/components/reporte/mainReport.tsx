@@ -35,7 +35,7 @@ type Props = {
 };
 
 export default function MainReport({ data }: Props) {
-  const { setDatos } = useReportStore();
+  const { setDatos, setTitle } = useReportStore();
   const navigate = useNavigate();
 
   if (!data) return <div>Cargando...</div>;
@@ -50,11 +50,8 @@ export default function MainReport({ data }: Props) {
   );
   function handleDoc(doc: DocumentItem) {
     setDatos(doc);
-    navigate(`/reportDetail`, {
-      state: {
-        title: data.title,
-      },
-    });
+    navigate(`/reportDetail`);
+    setTitle(data.title);
   }
   return (
     <div className={styles.container}>

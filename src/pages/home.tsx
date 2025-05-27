@@ -5,21 +5,25 @@ import KeywordUrlForm from "../components/home/form";
 import docs from "../assets/document.png";
 import HowItWorks from "../components/infoModal/infoModal";
 import { IoInformationCircle } from "react-icons/io5";
-
+import { useReportStore } from "../store/useReportStore";
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
+  const { loading } = useReportStore();
   return (
     <div>
       <div className={styles.containerTitle}>
         <h1 className={styles.title}>DocHawk</h1>
         <img src={docs} alt="docs" className={styles.docs} />
       </div>
-      <div className={styles.helpContainer}>
-        <button className={styles.helpButton} onClick={() => setIsOpen(true)}>
-          How it works
-          <IoInformationCircle fontSize={30} />
-        </button>
-      </div>
+
+      {!loading && (
+        <div className={styles.helpContainer}>
+          <button className={styles.helpButton} onClick={() => setIsOpen(true)}>
+            How it works
+            <IoInformationCircle fontSize={30} />
+          </button>
+        </div>
+      )}
 
       <div>
         <KeywordUrlForm />

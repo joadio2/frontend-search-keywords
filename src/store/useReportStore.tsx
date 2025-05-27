@@ -31,16 +31,24 @@ type ReportData = {
 };
 
 type ReportStore = {
+  loading: boolean;
+  title: string;
   report: ReportData | null;
   datosReport: DocumentItem | null;
+  setloading: (loading: boolean) => void;
+  setTitle: (title: string) => void;
   setDatos: (data: DocumentItem) => void;
   setReport: (report: ReportData) => void;
   clearReport: () => void;
 };
 
 export const useReportStore = create<ReportStore>((set) => ({
+  loading: false,
   report: null,
   datosReport: null,
+  title: "",
+  setloading: (l) => set({ loading: l }),
+  setTitle: (t) => set({ title: t }),
   setDatos: (data) => set({ datosReport: data }),
   setReport: (report) => set({ report }),
   clearReport: () => set({ report: null }),
