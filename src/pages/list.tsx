@@ -16,7 +16,9 @@ export default function List() {
   const fetchData = async () => {
     try {
       const userId = await getId();
-      const res = await fetch(`http://localhost:3000/getfiles/${userId}`);
+      const res = await fetch(
+        `https://sea-lion-app-xhc8a.ondigitalocean.app/getfiles/${userId}`
+      );
       const json = await res.json();
       if (res.ok) {
         setData(json.data);

@@ -10,7 +10,9 @@ export default function Report() {
       try {
         if (!title) return;
         const res = await fetch(
-          `http://localhost:3000/get-report?title=${encodeURIComponent(title)}`
+          `https://sea-lion-app-xhc8a.ondigitalocean.app/get-report?title=${encodeURIComponent(
+            title
+          )}`
         );
         console.log(res);
         if (!res.ok) throw new Error("Error al obtener el reporte");
